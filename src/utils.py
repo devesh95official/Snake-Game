@@ -11,33 +11,41 @@ def draw_text(surface, text, font, color, x, y, center=True):
         text_rect.topleft = (x, y)
     surface.blit(text_surface, text_rect)
 
-def load_highscore():
+def load_highscores():
     try:
-        with open('highscore.json', 'r') as f:
-            return json.load(f).get('highscore', 0)
+        with open('highscores.json', 'r') as f:
+            scores = json.load(f).get('scores', [])
+            return sorted(scores, reverse=True)[:10]
     except (FileNotFoundError, json.JSONDecodeError):
-        return 0
+        return [0] * 10
 
 def save_highscore(score):
-    with open('highscore.json', 'w') as f:
-        json.dump({'highscore': max(0, min(score, 9999))}, f)  # Cap between 0-9999
+    scores = load_highscores()
+    scores.append(score)
+    scores = sorted(scores, reverse=True)[:10]
+    with open('highscores.json', 'w') as f:
+        json.dump({'scores': scores}, f)
 
 class Button:
-    def __init__(self, x, y, width, height, text, font_size=36):
+    def __init__(self, x, y, width, height, text, font_size=28):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.font = pygame.font.Font(None, font_size)
+        self.font = pygame.font.Font(pygame.font.match_font('arial'), font_size)
         self.base_color = COLORS['button']
         self.hover_color = COLORS['button_hover']
         self.current_color = self.base_color
-        
+        self.hover_frame_count = 0
+
     def draw(self, surface):
-        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=5)
+        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=8)
         draw_text(surface, self.text, self.font, COLORS['text'], 
                 self.rect.centerx, self.rect.centery)
-        
+
     def check_hover(self, mouse_pos):
-        self.current_color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.base_color
+        was_hovered = self.rect.collidepoint(mouse_pos)
+        self.current_color = self.hover_color if was_hovered else self.base_color
+        self.hover_frame_count = 5 if was_hovered else max(0, self.hover_frame_count - 1)
+        return was_hovered
         
     def check_click(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
