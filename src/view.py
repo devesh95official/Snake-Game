@@ -1,6 +1,6 @@
 import pygame
 from config import *
-from utils import Button, draw_text
+from utils import Button, draw_text, load_highscore
 
 class GameView:
     def __init__(self):
@@ -10,12 +10,6 @@ class GameView:
         self.font = pygame.font.Font(None, 36)
         self.title_font = pygame.font.Font(None, 72)
         self.clock = pygame.time.Clock()
-
-    def draw_grid(self):
-        for x in range(0, GAME_WIDTH, CELL_SIZE):
-            pygame.draw.line(self.screen, COLORS['grid'], (x, 0), (x, GAME_HEIGHT))
-        for y in range(0, GAME_HEIGHT, CELL_SIZE):
-            pygame.draw.line(self.screen, COLORS['grid'], (0, y), (GAME_WIDTH, y))
 
     def draw_snake(self, snake):
         for segment in snake.body:
@@ -29,15 +23,19 @@ class GameView:
                          CELL_SIZE//2 - 3)
 
     def draw_score(self, score):
-        score_surface = self.font.render(f"Score: {score}", True, COLORS['text'])
-        self.screen.blit(score_surface, (10, GAME_HEIGHT + 5))
+        draw_text(self.screen, f"Score: {score}", self.font, COLORS['text'], 
+                70, GAME_HEIGHT + 20, center=False)
+        draw_text(self.screen, f"High Score: {load_highscore()}", self.font, 
+                COLORS['text'], GAME_WIDTH - 150, GAME_HEIGHT + 20, center=False)
 
-    def update_display(self, snake, food, score):
+    def update_display(self, snake, food, score, paused=False):
         self.screen.fill(COLORS['background'])
-        self.draw_grid()
         self.draw_snake(snake)
         self.draw_food(food)
         self.draw_score(score)
+        if paused:
+            draw_text(self.screen, "PAUSED", self.title_font, COLORS['text'], 
+                    GAME_WIDTH//2, GAME_HEIGHT//2)
         pygame.display.flip()
         self.clock.tick(FPS)
 
@@ -56,7 +54,7 @@ class GameView:
         self.screen.fill(COLORS['background'])
         draw_text(self.screen, "Game Over!", self.title_font, COLORS['text'], 
                 GAME_WIDTH//2, 100)
-        draw_text(self.screen, f"Score: {score}", self.font, COLORS['text'], 
+        draw_text(self.screen, f"Final Score: {score}", self.font, COLORS['text'], 
                 GAME_WIDTH//2, 200)
         
         restart_btn = Button(GAME_WIDTH//2 - 100, 300, 200, 50, "Restart")

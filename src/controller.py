@@ -11,13 +11,13 @@ class GameController:
             if event.type == pygame.QUIT:
                 self.quit = True
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key in [pygame.K_UP, pygame.K_w]:
                     snake.change_direction(pygame.Vector2(0, -CELL_SIZE))
-                elif event.key == pygame.K_DOWN:
+                elif event.key in [pygame.K_DOWN, pygame.K_s]:
                     snake.change_direction(pygame.Vector2(0, CELL_SIZE))
-                elif event.key == pygame.K_LEFT:
+                elif event.key in [pygame.K_LEFT, pygame.K_a]:
                     snake.change_direction(pygame.Vector2(-CELL_SIZE, 0))
-                elif event.key == pygame.K_RIGHT:
+                elif event.key in [pygame.K_RIGHT, pygame.K_d]:
                     snake.change_direction(pygame.Vector2(CELL_SIZE, 0))
                 elif event.key == pygame.K_SPACE:
                     self.paused = not self.paused
