@@ -20,7 +20,7 @@ def load_highscore():
 
 def save_highscore(score):
     with open('highscore.json', 'w') as f:
-        json.dump({'highscore': score}, f)
+        json.dump({'highscore': max(0, min(score, 9999))}, f)  # Cap between 0-9999
 
 class Button:
     def __init__(self, x, y, width, height, text, font_size=36):
