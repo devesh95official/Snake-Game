@@ -11,16 +11,20 @@ def draw_text(surface, text, font, color, x, y, center=True):
         text_rect.topleft = (x, y)
     surface.blit(text_surface, text_rect)
 
-def load_highscore():
+def load_highscores():
     try:
-        with open('highscore.json', 'r') as f:
-            return json.load(f).get('highscore', 0)
+        with open('highscores.json', 'r') as f:
+            scores = json.load(f).get('scores', [])
+            return sorted(scores, reverse=True)[:10]  # Return top 10
     except (FileNotFoundError, json.JSONDecodeError):
-        return 0
+        return [0] * 10  # Initialize with 10 zeros
 
 def save_highscore(score):
-    with open('highscore.json', 'w') as f:
-        json.dump({'highscore': max(0, min(score, 9999))}, f)  # Cap between 0-9999
+    scores = load_highscores()
+    scores.append(score)
+    scores = sorted(scores, reverse=True)[:10]  # Keep only top 10
+    with open('highscores.json', 'w') as f:
+        json.dump({'scores': scores}, f)
 
 class Button:
     def __init__(self, x, y, width, height, text, font_size=36):
@@ -32,7 +36,7 @@ class Button:
         self.current_color = self.base_color
         
     def draw(self, surface):
-        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=5)
+        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=15)
         draw_text(surface, self.text, self.font, COLORS['text'], 
                 self.rect.centerx, self.rect.centery)
         
