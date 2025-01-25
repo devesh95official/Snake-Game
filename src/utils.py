@@ -15,33 +15,37 @@ def load_highscores():
     try:
         with open('highscores.json', 'r') as f:
             scores = json.load(f).get('scores', [])
-            return sorted(scores, reverse=True)[:10]  # Return top 10
+            return sorted(scores, reverse=True)[:10]
     except (FileNotFoundError, json.JSONDecodeError):
-        return [0] * 10  # Initialize with 10 zeros
+        return [0] * 10
 
 def save_highscore(score):
     scores = load_highscores()
     scores.append(score)
-    scores = sorted(scores, reverse=True)[:10]  # Keep only top 10
+    scores = sorted(scores, reverse=True)[:10]
     with open('highscores.json', 'w') as f:
         json.dump({'scores': scores}, f)
 
 class Button:
-    def __init__(self, x, y, width, height, text, font_size=36):
+    def __init__(self, x, y, width, height, text, font_size=28):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.font = pygame.font.Font(None, font_size)
+        self.font = pygame.font.Font(pygame.font.match_font('arial'), font_size)
         self.base_color = COLORS['button']
         self.hover_color = COLORS['button_hover']
         self.current_color = self.base_color
-        
+        self.hover_frame_count = 0
+
     def draw(self, surface):
-        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=15)
+        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=8)
         draw_text(surface, self.text, self.font, COLORS['text'], 
                 self.rect.centerx, self.rect.centery)
-        
+
     def check_hover(self, mouse_pos):
-        self.current_color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.base_color
+        was_hovered = self.rect.collidepoint(mouse_pos)
+        self.current_color = self.hover_color if was_hovered else self.base_color
+        self.hover_frame_count = 5 if was_hovered else max(0, self.hover_frame_count - 1)
+        return was_hovered
         
     def check_click(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)

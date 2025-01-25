@@ -1,11 +1,40 @@
+import os
+
 GRID_SIZE = 20
 BASE_CELL_SIZE = 27
-MIN_WINDOW_SIZE = 400
+MIN_WINDOW_SIZE = 600
+SPRITE_DIR = os.path.join('assets', 'sprites')
+
 COLORS = {
-    'background': (30, 30, 30),
-    'snake': (76, 175, 80),
-    'food': (244, 67, 54),
+    'background': (25, 25, 30),
+    'score_text': (100, 200, 220),
+    'highscore_text': (240, 200, 80),
     'text': (255, 255, 255),
-    'button': (70, 70, 70),
-    'button_hover': (100, 100, 100)
+    'button': (60, 60, 70),
+    'button_hover': (90, 90, 100),
+    'wall': (50, 55, 60)
+}
+
+SPRITES = {
+    'apple': 'apple.png',
+    'body': {
+        'horizontal': 'body_horizontal.png',
+        'vertical': 'body_vertical.png',
+        'bottomleft': 'body_bottomleft.png',
+        'bottomright': 'body_bottomright.png',
+        'topleft': 'body_topleft.png',
+        'topright': 'body_topright.png'
+    },
+    'head': {
+        'up': 'head_up.png',
+        'down': 'head_down.png',
+        'left': 'head_left.png',
+        'right': 'head_right.png'
+    },
+    'tail': {
+        'up': 'tail_up.png',
+        'down': 'tail_down.png',
+        'left': 'tail_left.png',
+        'right': 'tail_right.png'
+    }
 }

@@ -1,4 +1,4 @@
 
 # Snake-Game
  Advanced python snake game
-# version 1.1
+# version 1.2

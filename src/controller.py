@@ -1,5 +1,5 @@
 import pygame
-from config import BASE_CELL_SIZE
+from config import GRID_SIZE  
 
 class GameController:
     def __init__(self):
@@ -7,7 +7,7 @@ class GameController:
         self.paused = False
         self.resize_event = None
 
-    def handle_input(self, snake, view):
+    def handle_input(self, snake):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit = True

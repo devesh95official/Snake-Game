@@ -16,6 +16,7 @@ class Game:
     def reset_game(self):
         self.snake = Snake()
         self.food = Food(GRID_SIZE)
+        self.food.randomize_position(self.snake.body)
         self.score = 0
         self.running = True
 
@@ -34,7 +35,7 @@ class Game:
                 self.view.handle_resize(self.controller.resize_event)
                 self.controller.resize_event = None
                 
-            self.controller.handle_input(self.snake, self.view)
+            self.controller.handle_input(self.snake)
             
             if not self.controller.paused:
                 self.snake.move()
@@ -78,8 +79,8 @@ class Game:
 
     def main_menu(self):
         while not self.controller.quit:
-            buttons = self.view.main_menu()
             mouse_pos = pygame.mouse.get_pos()
+            buttons = self.view.main_menu()
             
             for btn in buttons:
                 btn.check_hover(mouse_pos)
