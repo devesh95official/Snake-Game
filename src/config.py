@@ -14,7 +14,15 @@ COLORS = {
     'text': (255, 255, 255),
     'button': (60, 60, 70),
     'button_hover': (90, 90, 100),
-    'wall': (50, 55, 60)
+    'wall': (50, 55, 60),
+    'grass1': (159, 197, 74),
+    'grass2': (131, 177, 73),
+    'menu_gradient1': (255, 179, 71),
+    'menu_gradient2': (238, 96, 156),
+    'accent1': (74, 144, 217),
+    'accent2': (255, 221, 89),
+    'score_highlight': (255, 105, 97),
+    'menu_text': (255, 255, 255)
 }
 
 SPRITES = {

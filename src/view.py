@@ -68,8 +68,19 @@ class GameView:
         border_rect = pygame.Rect(x - 12, y - 12, self.game_width + 24, self.game_height + 24)
         pygame.draw.rect(self.screen, COLORS['wall'], border_rect, border_radius=20)
         
-        inner_rect = pygame.Rect(x, y, self.game_width, self.game_height)
-        pygame.draw.rect(self.screen, COLORS['background'], inner_rect, border_radius=12)
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
+                color = COLORS['grass1'] if (i + j) % 2 == 0 else COLORS['grass2']
+                cell_rect = pygame.Rect(
+                    x + i * self.cell_size,
+                    y + j * self.cell_size,
+                    self.cell_size,
+                    self.cell_size
+                )
+                pygame.draw.rect(self.screen, color, cell_rect)
+        
+        inner_border = pygame.Rect(x, y, self.game_width, self.game_height)
+        pygame.draw.rect(self.screen, COLORS['wall'], inner_border, border_radius=12, width=2)
 
     def draw_snake(self, snake):
         if len(snake.body) < 2:
@@ -171,25 +182,37 @@ class GameView:
         pygame.display.flip()
         self.clock.tick(12)
 
-    def create_button(self, y_pos, text, width=200):
+    def create_button(self, y_pos, text, width=200, color=None, hover_color=None):
         return Button(
             (self.current_size[0] - width) // 2,
             y_pos,
             width,
             50,
             text,
-            font_size=28
+            font_size=28,
+            base_color=color or COLORS['button'],
+            hover_color=hover_color or COLORS['button_hover']
         )
 
     def main_menu(self):
-        self.screen.fill(COLORS['wall'])
-        draw_text(self.screen, "SNAKE GAME", self.title_font, COLORS['text'],
+        gradient = pygame.Surface(self.current_size)
+        for y in range(self.current_size[1]):
+            blend = y / self.current_size[1]
+            color = (
+                int(COLORS['menu_gradient1'][0] * (1 - blend) + COLORS['menu_gradient2'][0] * blend),
+                int(COLORS['menu_gradient1'][1] * (1 - blend) + COLORS['menu_gradient2'][1] * blend),
+                int(COLORS['menu_gradient1'][2] * (1 - blend) + COLORS['menu_gradient2'][2] * blend)
+            )
+            pygame.draw.line(gradient, color, (0, y), (self.current_size[0], y))
+        
+        self.screen.blit(gradient, (0, 0))
+        draw_text(self.screen, "SNAKE GAME", self.title_font, COLORS['menu_text'],
                 self.current_size[0]//2, 80)
         
         buttons = [
-            self.create_button(180, "Play"),
-            self.create_button(260, "Highscores"),
-            self.create_button(340, "Exit")
+            self.create_button(180, "Play", color=COLORS['accent1'], hover_color=COLORS['accent2']),
+            self.create_button(260, "Highscores", color=COLORS['accent1'], hover_color=COLORS['accent2']),
+            self.create_button(340, "Exit", color=COLORS['accent1'], hover_color=COLORS['accent2'])
         ]
         
         for btn in buttons:
@@ -217,18 +240,22 @@ class GameView:
         return buttons
 
     def display_highscores(self, highscores):
-        self.screen.fill(COLORS['wall'])
-        draw_text(self.screen, "TOP SCORES", self.title_font, COLORS['text'],
+        self.screen.fill(COLORS['accent1'])
+        for i in range(0, self.current_size[0], 40):
+            pygame.draw.line(self.screen, COLORS['accent2'], (i, 0), (i, self.current_size[1]), 3)
+        
+        draw_text(self.screen, "TOP SCORES", self.title_font, COLORS['menu_text'],
                 self.current_size[0]//2, 60)
         
         y_pos = 140
         for idx, score in enumerate(highscores[:10], 1):
-            text_color = (240, 200, 80) if idx == 1 else COLORS['text']
+            text_color = COLORS['score_highlight'] if idx == 1 else COLORS['menu_text']
             draw_text(self.screen, f"{idx:02}. {score:04}", self.score_font, text_color,
                     self.current_size[0]//2, y_pos)
             y_pos += 40
         
-        back_btn = self.create_button(y_pos + 20, "Back", 150)
+        back_btn = self.create_button(y_pos + 20, "Back", 150, 
+                                    color=COLORS['accent2'], hover_color=COLORS['score_highlight'])
         back_btn.draw(self.screen)
         pygame.display.flip()
         

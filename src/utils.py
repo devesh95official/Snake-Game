@@ -28,13 +28,14 @@ def save_highscore(score):
         json.dump({'scores': scores}, f)
 
 class Button:
-    def __init__(self, x, y, width, height, text, font_size=28):
+    def __init__(self, x, y, width, height, text, font_size=28, 
+                 base_color=None, hover_color=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         font_path = os.path.join(FONT_DIR, FONTS['main'])
         self.font = pygame.font.Font(font_path, font_size)
-        self.base_color = COLORS['button']
-        self.hover_color = COLORS['button_hover']
+        self.base_color = base_color or COLORS['button']
+        self.hover_color = hover_color or COLORS['button_hover']
         self.current_color = self.base_color
         self.hover_frame_count = 0
 
