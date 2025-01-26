@@ -4,6 +4,8 @@ GRID_SIZE = 20
 BASE_CELL_SIZE = 27
 MIN_WINDOW_SIZE = 600
 SPRITE_DIR = os.path.join('assets', 'sprites')
+SOUND_DIR = os.path.join('assets', 'sounds')
+FONT_DIR = os.path.join('assets', 'fonts')
 
 COLORS = {
     'background': (25, 25, 30),
@@ -37,4 +39,13 @@ SPRITES = {
         'left': 'tail_left.png',
         'right': 'tail_right.png'
     }
+}
+
+SOUNDS = {
+    'eat': 'eat_sound.mp3',
+    'game_over': 'gameover_sound.mp3'
+}
+
+FONTS = {
+    'main': 'font.ttf'
 }
