@@ -1,9 +1,10 @@
 import pygame
+import os
 from snake import Snake
 from food import Food
 from controller import GameController
 from view import GameView
-from config import GRID_SIZE
+from config import GRID_SIZE, SOUNDS, SOUND_DIR
 from utils import load_highscores, save_highscore
 
 class Game:
@@ -11,7 +12,15 @@ class Game:
         self.controller = GameController()
         self.view = GameView()
         self.highscores = load_highscores()
+        self.load_sounds()
         self.reset_game()
+
+    def load_sounds(self):
+        pygame.mixer.init()
+        self.sounds = {
+            'eat': pygame.mixer.Sound(os.path.join(SOUND_DIR, SOUNDS['eat'])),
+            'game_over': pygame.mixer.Sound(os.path.join(SOUND_DIR, SOUNDS['game_over']))
+        }
 
     def reset_game(self):
         self.snake = Snake()
@@ -25,6 +34,7 @@ class Game:
             self.snake.grow = True
             self.food.randomize_position(self.snake.body)
             self.score += 1
+            self.sounds['eat'].play()
             if self.score > self.highscores[-1]:
                 save_highscore(self.score)
                 self.highscores = load_highscores()
@@ -48,6 +58,7 @@ class Game:
             self.view.update_display(self.snake, self.food.position, self.score, self.controller.paused)
 
     def show_game_over(self):
+        self.sounds['game_over'].play()
         buttons = self.view.game_over(self.score)
         
         while not self.controller.quit:

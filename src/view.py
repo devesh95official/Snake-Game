@@ -1,6 +1,6 @@
 import pygame
 import os
-from config import GRID_SIZE, BASE_CELL_SIZE, MIN_WINDOW_SIZE, COLORS, SPRITES, SPRITE_DIR
+from config import GRID_SIZE, BASE_CELL_SIZE, MIN_WINDOW_SIZE, COLORS, SPRITES, SPRITE_DIR, FONTS, FONT_DIR
 from utils import Button, draw_text, load_highscores
 
 class GameView:
@@ -10,11 +10,12 @@ class GameView:
         self.current_size = self.screen.get_size()
         pygame.display.set_caption("Snake Game")
         
-        self.font = pygame.font.Font(pygame.font.match_font('arial'), 24)
-        self.title_font = pygame.font.Font(pygame.font.match_font('arial', bold=True), 48)
-        self.score_font = pygame.font.Font(pygame.font.match_font('arial', bold=True), 28)
-        self.clock = pygame.time.Clock()
+        font_path = os.path.join(FONT_DIR, FONTS['main'])
+        self.font = pygame.font.Font(font_path, 24)
+        self.title_font = pygame.font.Font(font_path, 48)
+        self.score_font = pygame.font.Font(font_path, 28)
         
+        self.clock = pygame.time.Clock()
         self.cell_size = self.calculate_cell_size()
         self.game_width = GRID_SIZE * self.cell_size
         self.game_height = GRID_SIZE * self.cell_size
@@ -76,12 +77,10 @@ class GameView:
             
         x_offset, y_offset = self.get_play_area()
         
-        # Draw tail
         if len(snake.body) >= 2:
             tail_dir = self.get_tail_direction(snake.body)
             self.draw_sprite(self.sprites['tail'][tail_dir], snake.body[-1], x_offset, y_offset)
         
-        # Draw body
         for i in range(1, len(snake.body)-1):
             prev = snake.body[i-1]
             curr = snake.body[i]
@@ -89,13 +88,16 @@ class GameView:
             body_sprite = self.get_body_sprite(prev, curr, next_seg)
             self.draw_sprite(body_sprite, curr, x_offset, y_offset)
         
-        # Draw head
         head_dir = self.get_head_direction(snake.body)
         self.draw_sprite(self.sprites['head'][head_dir], snake.body[0], x_offset, y_offset)
 
     def get_head_direction(self, body):
-        dx = body[0][0] - body[1][0]
-        dy = body[0][1] - body[1][1]
+        dx = (body[0][0] - body[1][0]) % GRID_SIZE
+        dy = (body[0][1] - body[1][1]) % GRID_SIZE
+        
+        if dx > 1: dx -= GRID_SIZE
+        if dy > 1: dy -= GRID_SIZE
+        
         if dx == 1: return 'right'
         if dx == -1: return 'left'
         if dy == 1: return 'down'
@@ -104,18 +106,28 @@ class GameView:
     def get_tail_direction(self, body):
         if len(body) < 2:
             return 'up'
-        dx = body[-1][0] - body[-2][0]
-        dy = body[-1][1] - body[-2][1]
+            
+        dx = (body[-1][0] - body[-2][0]) % GRID_SIZE
+        dy = (body[-1][1] - body[-2][1]) % GRID_SIZE
+        
+        if dx > 1: dx -= GRID_SIZE
+        if dy > 1: dy -= GRID_SIZE
+        
         if dx == 1: return 'right'
         if dx == -1: return 'left'
         if dy == 1: return 'down'
         return 'up'
 
     def get_body_sprite(self, prev, curr, next_seg):
-        dx_prev = curr[0] - prev[0]
-        dy_prev = curr[1] - prev[1]
-        dx_next = next_seg[0] - curr[0]
-        dy_next = next_seg[1] - curr[1]
+        dx_prev = (curr[0] - prev[0]) % GRID_SIZE
+        dy_prev = (curr[1] - prev[1]) % GRID_SIZE
+        dx_next = (next_seg[0] - curr[0]) % GRID_SIZE
+        dy_next = (next_seg[1] - curr[1]) % GRID_SIZE
+
+        dx_prev = dx_prev if dx_prev <= 1 else dx_prev - GRID_SIZE
+        dy_prev = dy_prev if dy_prev <= 1 else dy_prev - GRID_SIZE
+        dx_next = dx_next if dx_next <= 1 else dx_next - GRID_SIZE
+        dy_next = dy_next if dy_next <= 1 else dy_next - GRID_SIZE
 
         if dx_prev == dx_next and dy_prev == dy_next:
             return self.sprites['body']['horizontal' if dx_prev != 0 else 'vertical']

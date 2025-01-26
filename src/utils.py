@@ -1,6 +1,7 @@
 import pygame
 import json
-from config import COLORS
+from config import COLORS, FONTS, FONT_DIR
+import os
 
 def draw_text(surface, text, font, color, x, y, center=True):
     text_surface = font.render(text, True, color)
@@ -30,7 +31,8 @@ class Button:
     def __init__(self, x, y, width, height, text, font_size=28):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.font = pygame.font.Font(pygame.font.match_font('arial'), font_size)
+        font_path = os.path.join(FONT_DIR, FONTS['main'])
+        self.font = pygame.font.Font(font_path, font_size)
         self.base_color = COLORS['button']
         self.hover_color = COLORS['button_hover']
         self.current_color = self.base_color
