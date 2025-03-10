@@ -7,6 +7,13 @@ SPRITE_DIR = os.path.join('assets', 'sprites')
 SOUND_DIR = os.path.join('assets', 'sounds')
 FONT_DIR = os.path.join('assets', 'fonts')
 
+# Difficulty settings - frames per second and score multiplier
+DIFFICULTY = {
+    'easy': {'fps': 8, 'multiplier': 1},
+    'medium': {'fps': 12, 'multiplier': 2},
+    'hard': {'fps': 16, 'multiplier': 3}
+}
+
 COLORS = {
     'background': (25, 25, 30),
     'score_text': (100, 200, 220),
@@ -15,14 +22,9 @@ COLORS = {
     'button': (60, 60, 70),
     'button_hover': (90, 90, 100),
     'wall': (50, 55, 60),
-    'grass1': (159, 197, 74),
-    'grass2': (131, 177, 73),
-    'menu_gradient1': (255, 179, 71),
-    'menu_gradient2': (238, 96, 156),
-    'accent1': (74, 144, 217),
-    'accent2': (255, 221, 89),
-    'score_highlight': (255, 105, 97),
-    'menu_text': (255, 255, 255)
+    'easy': (100, 200, 100),
+    'medium': (200, 200, 100),
+    'hard': (200, 100, 100)
 }
 
 SPRITES = {
@@ -51,7 +53,8 @@ SPRITES = {
 
 SOUNDS = {
     'eat': 'eat_sound.mp3',
-    'game_over': 'gameover_sound.mp3'
+    'game_over': 'gameover_sound.mp3',
+    'powerup': 'power_up_sound.mp3'
 }
 
 FONTS = {

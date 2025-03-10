@@ -1,6 +1,6 @@
 import pygame
 import json
-from config import COLORS, FONTS, FONT_DIR
+from src.config import COLORS, FONTS, FONT_DIR
 import os
 
 def draw_text(surface, text, font, color, x, y, center=True):
@@ -16,26 +16,25 @@ def load_highscores():
     try:
         with open('highscores.json', 'r') as f:
             scores = json.load(f).get('scores', [])
-            return sorted(scores, reverse=True)[:10]
+            return sorted(scores, reverse=True)[:50]
     except (FileNotFoundError, json.JSONDecodeError):
         return [0] * 10
 
 def save_highscore(score):
     scores = load_highscores()
     scores.append(score)
-    scores = sorted(scores, reverse=True)[:10]
+    scores = sorted(scores, reverse=True)[:50]
     with open('highscores.json', 'w') as f:
         json.dump({'scores': scores}, f)
 
 class Button:
-    def __init__(self, x, y, width, height, text, font_size=28, 
-                 base_color=None, hover_color=None):
+    def __init__(self, x, y, width, height, text, font_size=28):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         font_path = os.path.join(FONT_DIR, FONTS['main'])
         self.font = pygame.font.Font(font_path, font_size)
-        self.base_color = base_color or COLORS['button']
-        self.hover_color = hover_color or COLORS['button_hover']
+        self.base_color = COLORS['button']
+        self.hover_color = COLORS['button_hover']
         self.current_color = self.base_color
         self.hover_frame_count = 0
 
