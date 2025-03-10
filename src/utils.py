@@ -1,6 +1,6 @@
 import pygame
 import json
-from config import COLORS, FONTS, FONT_DIR
+from src.config import COLORS, FONTS, FONT_DIR
 import os
 
 def draw_text(surface, text, font, color, x, y, center=True):
@@ -16,14 +16,14 @@ def load_highscores():
     try:
         with open('highscores.json', 'r') as f:
             scores = json.load(f).get('scores', [])
-            return sorted(scores, reverse=True)[:10]
+            return sorted(scores, reverse=True)[:50]
     except (FileNotFoundError, json.JSONDecodeError):
         return [0] * 10
 
 def save_highscore(score):
     scores = load_highscores()
     scores.append(score)
-    scores = sorted(scores, reverse=True)[:10]
+    scores = sorted(scores, reverse=True)[:50]
     with open('highscores.json', 'w') as f:
         json.dump({'scores': scores}, f)
 

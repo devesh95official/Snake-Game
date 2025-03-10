@@ -1,5 +1,5 @@
 import pygame
-from config import GRID_SIZE  
+from src.config import GRID_SIZE  
 
 class GameController:
     def __init__(self):
